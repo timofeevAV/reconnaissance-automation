@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "reconnaissance-automation",
+    "slug": "reconnaissance-automation",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.reconnaissanceautomation"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.anonymous.reconnaissanceautomation"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/involve/Involve-Bold.otf",
+            "./assets/fonts/involve/Involve-BoldOblique.otf",
+            "./assets/fonts/involve/Involve-Medium.otf",
+            "./assets/fonts/involve/Involve-MediumOblique.otf",
+            "./assets/fonts/involve/Involve-Oblique.otf",
+            "./assets/fonts/involve/Involve-Regular.otf",
+            "./assets/fonts/involve/Involve-SemiBold.otf",
+            "./assets/fonts/involve/Involve-SemiBoldOblique.otf"
+          ]
+        }
+      ]
+    ]
+  }
+}
