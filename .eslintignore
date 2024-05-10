@@ -1,0 +1,16 @@
+**/__generated__/**
+**/.expo/**
+**/.next/**
+**/android/**
+**/assets/**
+**/bin/**
+**/build/**
+**/fastlane/**
+**/ios/**
+**/kotlin/providers/**
+**/node_modules/**
+**/vendored/**
+/docs/public/static/**
+/docs/react-native-website/**
+/react-native-lab/react-native/**
+.tamagui

@@ -1,6 +1,6 @@
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { View, ViewProps } from "tamagui";
-import { SafeAreaViewProps } from "./types";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'tamagui';
+import { SafeAreaViewProps } from './types';
 
 export const SafeAreaView = ({
   children,
@@ -19,7 +19,9 @@ export const SafeAreaView = ({
   };
 
   return (
-    <View style={safeAreaStyles} {...props}>
+    <View
+      style={safeAreaStyles}
+      {...props}>
       {children}
     </View>
   );

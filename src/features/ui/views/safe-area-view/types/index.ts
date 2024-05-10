@@ -1,1 +1,1 @@
-export { SafeAreaViewProps } from "./safe-area-view-props";
+export { SafeAreaViewProps } from './safe-area-view-props';

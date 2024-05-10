@@ -1,5 +1,5 @@
-import { Button, Spinner } from "tamagui";
-import { SubmitButtonProps } from "./types";
+import { Button, Spinner } from 'tamagui';
+import { SubmitButtonProps } from './types';
 
 export const SubmitButton = ({
   isSubmitting,
@@ -8,10 +8,10 @@ export const SubmitButton = ({
 }: SubmitButtonProps) => {
   return (
     <Button
-      disabled={isSubmitting}
+      disabled={isSubmitting || props.disabled}
       icon={isSubmitting ? <Spinner /> : undefined}
-      {...props}
-    >
+      theme={isSubmitting || props.disabled ? undefined : 'active'}
+      {...props}>
       {children}
     </Button>
   );

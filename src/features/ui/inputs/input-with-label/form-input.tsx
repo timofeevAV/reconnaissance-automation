@@ -1,26 +1,29 @@
-import { Input, Label, XStack } from "tamagui";
-import { FormInputProps } from "./types";
-import { ErrorTooltip } from "@features/ui/tooltips/error-tooltip/error-tooltip";
+import { Fieldset, Input, Label, XStack } from 'tamagui';
+import { FormInputProps } from './types';
+import { ErrorTooltip } from '@/features/ui/tooltips/error-tooltip/error-tooltip';
 
-export const FormInput = (props: FormInputProps) => {
-  const { label, name, value, error, handleChangeText, handleBlur, rest } =
-    props;
-
+export const FormField = ({
+  label,
+  name,
+  value,
+  error,
+  ...props
+}: FormInputProps) => {
   return (
-    <>
+    <Fieldset>
       <Label htmlFor={name}>{label}</Label>
-      <XStack alignItems="center" gap="$2">
+      <XStack
+        alignItems="center"
+        gap="$2">
         <Input
-          onChangeText={handleChangeText}
-          onBlur={handleBlur}
           value={value}
           flex={1}
           id={name}
-          theme={error ? "red" : undefined}
-          {...rest}
+          theme={error ? 'red' : undefined}
+          {...props}
         />
         {error && <ErrorTooltip text={error} />}
       </XStack>
-    </>
+    </Fieldset>
   );
 };

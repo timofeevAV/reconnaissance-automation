@@ -1,4 +1,4 @@
-import { InputProps } from "tamagui";
+import { InputProps } from 'tamagui';
 
 export interface FormField {
   key: string;

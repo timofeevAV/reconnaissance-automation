@@ -1,5 +1,5 @@
-import { TooltipProps } from "tamagui";
+import { PopoverProps } from 'tamagui';
 
-export interface BaseTooltipProps extends TooltipProps {
+export interface ErrorTooltipProps extends PopoverProps {
   text: string | undefined;
 }
