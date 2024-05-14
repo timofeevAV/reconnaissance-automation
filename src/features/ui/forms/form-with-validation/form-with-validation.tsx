@@ -2,7 +2,7 @@ import { Form } from 'tamagui';
 import { Formik } from 'formik';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { FormWithValidationProps } from './types';
-import { FormField } from '@/features/ui/inputs/input-with-label/form-input';
+import { InputWithLabel } from '@/features/ui/inputs/input-with-label/input-with-label';
 import { SubmitButton } from '@/features/ui/buttons/submit-button/submit-button';
 
 export const FormWithValidation = ({
@@ -36,7 +36,7 @@ export const FormWithValidation = ({
           onSubmit={handleSubmit}
           {...props}>
           {initialValues.map(({ key, label, additionalProps }) => (
-            <FormField
+            <InputWithLabel
               key={key}
               label={label}
               name={`${key}-${formName}}`}
@@ -44,6 +44,7 @@ export const FormWithValidation = ({
               error={errors[key] as string | undefined}
               onChangeText={handleChange(key)}
               onBlur={handleBlur(key)}
+              theme={'active'}
               {...additionalProps}
             />
           ))}

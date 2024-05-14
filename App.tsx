@@ -1,3 +1,4 @@
+import '@tamagui/core/reset.css';
 import {
   NavigationContainer,
   ThemeProvider,
@@ -5,8 +6,6 @@ import {
   DarkTheme,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { SignIn, SignUp, Trips, TripDetails } from '@/pages';
-import '@tamagui/core/reset.css';
 import { TamaguiProvider } from '@tamagui/core';
 import { useColorScheme } from 'react-native';
 import tamaguiConfig from './tamagui.config';
@@ -15,22 +14,39 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { PortalProvider, useTheme } from 'tamagui';
+import { PortalProvider } from 'tamagui';
 import { HeaderBackButton } from '@/features/ui';
+import { useAuthFacade } from '@/features/users';
+import { AuthenticationStack, MainStack } from '@/features/navigation';
+import * as Linking from 'expo-linking';
+import { NotFound } from '@/pages';
+
+const prefix = Linking.createURL('/');
+
+const linking = {
+  prefixes: [prefix],
+  config: {
+    screens: {
+      'not-found': '*',
+      // activate: {
+      //   path: 'activate/:uid/:token',
+      //   parse: { uid: () => 'string', token: () => 'string' },
+      // },
+    },
+  },
+};
 
 SplashScreen.preventAutoHideAsync();
 
-type RootStackParamList = {
-  'sign-in': undefined;
-  'sign-up': undefined;
-  trips: undefined;
-  'trip-details': { title: string | undefined } | undefined;
-};
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const colorScheme = useColorScheme();
+  const { user, bootstrap, isLoading } = useAuthFacade();
+
+  useEffect(() => {
+    bootstrap();
+  }, [bootstrap]);
 
   const [fontsLoaded, fontError] = useFonts({
     'Involve-Bold': require('./assets/fonts/involve/Involve-Bold.otf'),
@@ -44,10 +60,10 @@ export default function App() {
   });
 
   useEffect(() => {
-    if (fontsLoaded || fontError) {
+    if (!isLoading && (fontsLoaded || fontError)) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsLoaded, fontError, isLoading]);
 
   if (!fontsLoaded && !fontError) {
     return null;
@@ -55,7 +71,7 @@ export default function App() {
 
   return (
     <PortalProvider>
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <TamaguiProvider
           config={tamaguiConfig}
           defaultTheme={colorScheme || undefined}>
@@ -68,7 +84,6 @@ export default function App() {
                 },
                 headerBackTitleVisible: false,
                 headerTitleAlign: 'center',
-                headerTransparent: true,
                 headerLeft: props => (
                   <HeaderBackButton
                     navigation={navigation}
@@ -76,39 +91,17 @@ export default function App() {
                   />
                 ),
               })}>
-              <Stack.Group
-                screenOptions={{
-                  headerTitle: '',
-                }}>
-                <Stack.Screen
-                  name="sign-in"
-                  component={SignIn}
-                />
-                <Stack.Screen
-                  name="sign-up"
-                  component={SignUp}
-                />
-              </Stack.Group>
-              <Stack.Group
-                screenOptions={{
-                  headerBlurEffect: colorScheme === 'dark' ? 'dark' : 'light',
-                }}>
-                <Stack.Screen
-                  name="trips"
-                  component={Trips}
-                  options={{
-                    headerLargeTitle: true,
-                    title: 'Выезды',
-                  }}
-                />
-                <Stack.Screen
-                  name="trip-details"
-                  component={TripDetails}
-                  options={({ route }) => ({
-                    title: route.params?.title,
-                  })}
-                />
-              </Stack.Group>
+              {user ? MainStack() : AuthenticationStack()}
+              <Stack.Screen
+                component={NotFound}
+                name="not-found"
+                options={({ navigation }) => ({
+                  presentation: 'modal',
+                  title: '',
+                  headerTransparent: true,
+                  headerShown: navigation.canGoBack(),
+                })}
+              />
             </Stack.Navigator>
           </ThemeProvider>
         </TamaguiProvider>

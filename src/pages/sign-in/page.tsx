@@ -1,31 +1,24 @@
 import { SignInPageProps } from './sign-in-page-props';
-import { Button, Text, XStack } from 'tamagui';
+import { Text, XStack, YStack } from 'tamagui';
 import { SignInForm } from '@/features/users';
-import { DismissKeyboardView, SafeAreaView } from '@/features/ui';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { DismissKeyboardView } from '@/features/ui';
 
 export const SignIn = (props: SignInPageProps) => {
   const { navigation } = props;
-  const insets = useSafeAreaInsets();
 
   return (
-    <SafeAreaView
-      allSafe
-      flex={1}>
-      <DismissKeyboardView
-        paddingHorizontal={'$3'}
-        flexGrow={1}
-        justifyContent="center">
+    <DismissKeyboardView
+      paddingHorizontal={'$3'}
+      flex={1}
+      justifyContent="center">
+      <YStack gap={'$3'}>
         <SignInForm />
-        <Button onPress={() => navigation.navigate('trips')}>
-          go to trips
-        </Button>
         <XStack
           alignSelf="center"
-          position="absolute"
-          bottom={insets.bottom ? insets.bottom : '$3'}
+          // position="absolute"
+          // bottom={insets.bottom ? insets.bottom : '$3'}
           flexWrap="wrap"
-          gap="$1">
+          gap="$1.5">
           <Text textAlign="center">Ещё не зарегистрированы?</Text>
           <Text
             pressStyle={{
@@ -37,7 +30,7 @@ export const SignIn = (props: SignInPageProps) => {
             Зарегистрироваться
           </Text>
         </XStack>
-      </DismissKeyboardView>
-    </SafeAreaView>
+      </YStack>
+    </DismissKeyboardView>
   );
 };

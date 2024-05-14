@@ -10,9 +10,8 @@ export const HeaderBackButton = ({
     <Button
       unstyled
       pressStyle={{ scale: 0.9 }}
-      onPress={() => navigation.goBack()}
-      {...props}>
-      <ChevronLeft />
+      onPress={() => navigation.goBack()}>
+      <ChevronLeft scale={1.2} />
     </Button>
   ) : null;
 };
