@@ -1,5 +1,3 @@
-import { NavigationProp, ParamListBase } from "@react-navigation/native";
+import { AuthStackScreenBaseProps } from '@/features/navigation/auth-stack/types';
 
-export interface SignInPageProps {
-  navigation: NavigationProp<ParamListBase>;
-}
+export type SignInPageProps = AuthStackScreenBaseProps<'sign-in'>;

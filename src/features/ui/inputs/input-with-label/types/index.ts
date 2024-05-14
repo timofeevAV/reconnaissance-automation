@@ -1,1 +1,1 @@
-export { FormInputProps } from "./form-input-props";
+export { InputWithLabelProps } from './input-with-label-props';

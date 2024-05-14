@@ -1,25 +1,43 @@
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { View, ViewProps } from "tamagui";
-import { SafeAreaViewProps } from "./types";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'tamagui';
+import { SafeAreaViewProps } from './types';
 
 export const SafeAreaView = ({
   children,
   allSafe,
-  upDownSafe,
+  topBottomSafe,
   leftRightSafe,
+  topSafe,
+  bottomSafe,
+  leftSafe,
+  rightSafe,
   ...props
 }: SafeAreaViewProps) => {
   const insets = useSafeAreaInsets();
 
   const safeAreaStyles = {
-    paddingTop: allSafe || upDownSafe ? insets.top : 0,
-    paddingBottom: allSafe || upDownSafe ? insets.bottom : 0,
-    paddingLeft: allSafe || leftRightSafe ? insets.left : 0,
-    paddingRight: allSafe || leftRightSafe ? insets.right : 0,
+    paddingTop:
+      topSafe !== false && (allSafe || topBottomSafe || topSafe)
+        ? insets.top
+        : 0,
+    paddingBottom:
+      bottomSafe !== false && (allSafe || topBottomSafe || bottomSafe)
+        ? insets.bottom
+        : 0,
+    paddingLeft:
+      leftSafe !== false && (allSafe || leftRightSafe || leftSafe)
+        ? insets.left
+        : 0,
+    paddingRight:
+      rightSafe !== false && (allSafe || leftRightSafe || rightSafe)
+        ? insets.right
+        : 0,
   };
 
   return (
-    <View style={safeAreaStyles} {...props}>
+    <View
+      style={safeAreaStyles}
+      {...props}>
       {children}
     </View>
   );

@@ -1,13 +1,13 @@
-import { config } from "@tamagui/config/v3";
-import { createFont, createTamagui } from "tamagui";
+import { config } from '@tamagui/config/v3';
+import { createFont, createTamagui } from 'tamagui';
 
 const involve = {
-  normal: { normal: "Involve-Regular", italic: "Involve-Oblique" },
-  bold: { normal: "Involve-Bold", italic: "Involve-BoldOblique" },
-  400: { normal: "Involve-Regular", italic: "Involve-Oblique" },
-  500: { normal: "Involve-Medium", italic: "Involve-MediumOblique" },
-  600: { normal: "Involve-SemiBold", italic: "Involve-SemiBoldOblique" },
-  700: { normal: "Involve-Bold", italic: "Involve-BoldOblique" },
+  normal: { normal: 'Involve-Regular', italic: 'Involve-Oblique' },
+  bold: { normal: 'Involve-Bold', italic: 'Involve-BoldOblique' },
+  400: { normal: 'Involve-Regular', italic: 'Involve-Oblique' },
+  500: { normal: 'Involve-Medium', italic: 'Involve-MediumOblique' },
+  600: { normal: 'Involve-SemiBold', italic: 'Involve-SemiBoldOblique' },
+  700: { normal: 'Involve-Bold', italic: 'Involve-BoldOblique' },
 };
 
 const headingFont = createFont({
@@ -35,6 +35,6 @@ export default tamaguiConfig;
 
 export type Conf = typeof tamaguiConfig;
 
-declare module "tamagui" {
+declare module 'tamagui' {
   interface TamaguiCustomConfig extends Conf {}
 }

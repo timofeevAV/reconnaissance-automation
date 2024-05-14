@@ -4,8 +4,9 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@features/*": ["src/features/*"],
-      "@pages/*": ["src/pages/*"]
+      "@/features/*": ["src/features/*"],
+      "@/pages": ["src/pages/index"],
+      "@/pages/*": ["src/pages/*"]
     }
   }
 }

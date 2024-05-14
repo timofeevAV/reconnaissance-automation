@@ -1,1 +1,1 @@
-export { SubmitButtonProps } from "./submit-button-props";
+export { SubmitButtonProps } from './submit-button-props';

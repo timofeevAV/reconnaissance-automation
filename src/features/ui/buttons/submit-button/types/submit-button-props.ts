@@ -1,4 +1,4 @@
-import { ButtonProps } from "tamagui";
+import { ButtonProps } from 'tamagui';
 
 export interface SubmitButtonProps extends ButtonProps {
   isSubmitting?: boolean;
