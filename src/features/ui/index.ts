@@ -1,3 +1,5 @@
+export { Popup } from './popup/popup';
+export { LoadingScreen } from './loaders/loading-screen';
 export { FormWithValidation } from './forms/form-with-validation/form-with-validation';
 export { InputWithLabel } from './inputs/input-with-label/input-with-label';
 export { ErrorTooltip } from './tooltips/error-tooltip/error-tooltip';

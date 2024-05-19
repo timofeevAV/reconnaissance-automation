@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Input,
   Label,
@@ -12,7 +12,6 @@ import {
   YStack,
   ScrollView,
   Text,
-  YGroup,
   ListItem,
 } from 'tamagui';
 import { Edit3 } from '@tamagui/lucide-icons';
@@ -24,6 +23,7 @@ import { useImmer } from 'use-immer';
 
 export const EditTripDataSheet = ({
   trip,
+  setTrip,
   navigation,
 }: EditTripDataSheetProps) => {
   const [tripFormData, updateTripFormData] = useImmer({
@@ -33,10 +33,6 @@ export const EditTripDataSheet = ({
   const { updateTrip } = useTripsFacade();
   const [open, setOpen] = useState(false);
   const insets = useSafeAreaInsets();
-
-  useEffect(() => {
-    updateTripFormData(trip);
-  }, [open, trip, updateTripFormData]);
 
   const updateName = useCallback(
     (newName: string) => {
@@ -48,13 +44,18 @@ export const EditTripDataSheet = ({
   );
 
   const onSave = useCallback(() => {
-    updateTrip(trip.id, { name: tripFormData.name }, accessToken)
-      .then(() => navigation.setOptions({ title: tripFormData.name }))
+    updateTrip(trip.id, tripFormData, accessToken)
+      .then(() => {
+        navigation.setOptions({ title: tripFormData.name });
+        setTrip(draft => {
+          draft.name = tripFormData.name;
+        });
+      })
       .catch(error => {
         console.error('Failed to update trip:', error);
       })
       .finally(() => setOpen(false));
-  }, [trip.id, tripFormData, accessToken, updateTrip, navigation]);
+  }, [updateTrip, trip.id, tripFormData, accessToken, navigation, setTrip]);
 
   const isSaveDisabled = useMemo(
     () => !tripFormData.name || tripFormData.name === trip.name,
@@ -79,13 +80,13 @@ export const EditTripDataSheet = ({
           borderTopStartRadius={'$5'}
           borderTopEndRadius={'$5'}
           paddingTop={'$5'}
-          paddingHorizontal={'$5'}>
+          paddingHorizontal={'$5'}
+          paddingBottom={insets.bottom ? insets.bottom : '$5'}>
           <YStack
             gap={'$3'}
-            h={'100%'}>
+            flex={1}>
             <H4>Изменить данные о выезде</H4>
             <Separator themeInverse />
-
             <Fieldset
               gap="$3"
               horizontal>
@@ -97,19 +98,11 @@ export const EditTripDataSheet = ({
                 onChangeText={updateName}
               />
             </Fieldset>
-
             <Text>Участники</Text>
             <ScrollView
               borderRadius={'$5'}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="always"
-              // backgroundColor={'red'}
-              h={'60%'}
-              flexGrow={0}
-              onScroll={e => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
               borderWidth={'$1'}
               borderColor={'$borderColor'}
               gap={'$3'}>
@@ -119,11 +112,9 @@ export const EditTripDataSheet = ({
             </ScrollView>
           </YStack>
           <XStack
-            alignSelf="flex-end"
             gap={'$3'}
-            position="absolute"
-            bottom={insets.bottom ? insets.bottom : '$5'}
-            right={'$5'}>
+            mt={'$3'}
+            alignSelf="flex-end">
             <Button onPress={() => setOpen(false)}>Отмена</Button>
             <Button
               theme={isSaveDisabled ? 'blue' : 'blue_active'}

@@ -9,16 +9,16 @@ import {
   TripsList,
   SelectModeActions,
   AddTripDialog,
-  TripsContextMenu,
+  // TripsContextMenu,
 } from '@/features/trips';
-import { View, getTokens } from 'tamagui';
+import { View } from 'tamagui';
 import { useTripsFacade } from '@/features/trips';
-import { Dimensions, LayoutAnimation } from 'react-native';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { LayoutAnimation } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { TripsListItemType } from '@/features/trips/trips-list/trips-list-item/types';
 import { useAuthFacade } from '@/features/users/facades';
 import { TripsPageProps } from './trips-page-props';
+import { TripsContextMenu } from '@/features/trips';
 
 export const Trips = (props: TripsPageProps) => {
   const { navigation } = props;
@@ -27,8 +27,6 @@ export const Trips = (props: TripsPageProps) => {
   const [selectMode, setSelectMode] = useState(false);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const bottomTabBarHeight = useBottomTabBarHeight();
-  const tamaguiSpace = getTokens().space['$3'].val;
   const list = useRef<FlashList<TripsListItemType> | null>(null);
 
   useEffect(() => {
@@ -83,18 +81,13 @@ export const Trips = (props: TripsPageProps) => {
 
   return (
     <View flex={1}>
-      <View
-        height={
-          Dimensions.get('window').height - bottomTabBarHeight - tamaguiSpace
-        }>
-        <TripsList
-          listRef={list}
-          selectMode={selectMode}
-          selectedItems={selectedItems}
-          selectItem={selectItem}
-          navigation={navigation}
-        />
-      </View>
+      <TripsList
+        listRef={list}
+        selectMode={selectMode}
+        selectedItems={selectedItems}
+        selectItem={selectItem}
+        navigation={navigation}
+      />
       {selectMode ? (
         <SelectModeActions
           selectAll={selectAll}

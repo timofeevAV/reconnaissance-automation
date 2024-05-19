@@ -1,10 +1,10 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { XGroup, Button, getTokens } from 'tamagui';
 import { SelectModeActionsProps } from './types';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeOutDown, useSharedValue } from 'react-native-reanimated';
 
-const SelectModeActions = ({
+export const SelectModeActions = ({
   selectAll,
   isItemsSelected,
   removeSelectedItems,
@@ -45,7 +45,3 @@ const SelectModeActions = ({
     </Animated.View>
   );
 };
-
-// SelectModeActions.displayName = 'SelectModeActions';
-
-export { SelectModeActions };

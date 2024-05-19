@@ -29,7 +29,6 @@ interface AuthState {
   refreshToken: string | null;
   user: Omit<User, 'password' | 're_password'> | null;
   isLoading: boolean;
-  error: string | null;
 }
 
 interface AuthActions {
@@ -50,7 +49,6 @@ const initialState: AuthState = {
   refreshToken: null,
   user: null,
   isLoading: true,
-  error: null,
 };
 
 const useAuthStore = create<AuthStore>()(
@@ -67,22 +65,16 @@ const useAuthStore = create<AuthStore>()(
               state.refreshToken = refresh;
             });
             await get().getUser();
-          } catch (err) {
-            set(state => {
-              state.accessToken = null;
-              state.refreshToken = null;
-              state.error = 'Неверный логин или пароль';
-            });
+          } catch (error) {
+            console.error(error);
             throw new Error('Неверный логин или пароль');
           }
         },
         signUp: async userData => {
           try {
             await axiosInstance.post('users/', userData);
-          } catch (err) {
-            set(state => {
-              state.error = 'Ошибка регистрации';
-            });
+          } catch (error) {
+            console.error(error);
             throw new Error('Ошибка регистрации');
           }
         },
@@ -99,10 +91,8 @@ const useAuthStore = create<AuthStore>()(
             set(state => {
               state.user = response.data;
             });
-          } catch (err) {
-            set(state => {
-              state.error = 'Ошибка получения данных пользователя';
-            });
+          } catch (error) {
+            console.error(error);
             throw new Error('Ошибка получения данных пользователя');
           }
         },
@@ -115,10 +105,8 @@ const useAuthStore = create<AuthStore>()(
             set(state => {
               state.accessToken = access;
             });
-          } catch (err) {
-            set(state => {
-              state.error = 'Ошибка обновления токена';
-            });
+          } catch (error) {
+            console.error(error);
             throw new Error('Ошибка обновления токена');
           }
         },
@@ -127,10 +115,8 @@ const useAuthStore = create<AuthStore>()(
             await axiosInstance.post('jwt/verify/', {
               token: accessToken,
             });
-          } catch (err) {
-            set(state => {
-              state.error = 'Ошибка верификации токена';
-            });
+          } catch (error) {
+            console.error(error);
             throw new Error('Ошибка верификации токена');
           }
         },
@@ -140,10 +126,8 @@ const useAuthStore = create<AuthStore>()(
               uid,
               token,
             });
-          } catch (err) {
-            set(state => {
-              state.error = 'Ошибка активации аккаунта';
-            });
+          } catch (error) {
+            console.error(error);
             throw new Error('Ошибка активации аккаунта');
           }
         },
@@ -151,19 +135,38 @@ const useAuthStore = create<AuthStore>()(
           set(state => {
             state.isLoading = true;
           });
+
           try {
-            const refreshToken = get().refreshToken;
-            const accessToken = get().accessToken;
+            const {
+              refreshToken,
+              accessToken,
+              logout,
+              verify,
+              refresh,
+              getUser,
+            } = get();
 
             if (!refreshToken || !accessToken) {
-              await get().logout();
+              await logout();
               return;
             }
 
-            await get().refresh(refreshToken);
-            await get().verify(accessToken);
-            await get().getUser();
-          } catch (err) {
+            try {
+              await verify(accessToken);
+              await getUser();
+            } catch (verifyError) {
+              console.error(verifyError);
+              try {
+                await refresh(refreshToken);
+                await verify(accessToken);
+                await getUser();
+              } catch (refreshError) {
+                console.error(refreshError);
+                await logout();
+              }
+            }
+          } catch (error) {
+            console.error(error);
             await get().logout();
           } finally {
             set(state => {

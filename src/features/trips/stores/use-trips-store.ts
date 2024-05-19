@@ -5,6 +5,7 @@ import axios from 'axios';
 import { immer } from 'zustand/middleware/immer';
 import { SortOption } from './types';
 import { sortOptionToSearchParam } from '@/features/utils';
+import { TripDate } from '../types';
 
 const BASE_URL =
   Platform.select({
@@ -41,43 +42,88 @@ const useTripsStore = create<TripsStore>()(
       });
     },
 
-    // fetchTrips: async (accessToken, fetchNext) => {
-    //   set(state => {
-    //     state.isLoading = true;
-    //   });
-    //   try {
-    //     if (fetchNext && !get().next) {
-    //       return;
-    //     }
+    fetchTripsInBounds: async (bounds, accessToken) => {
+      try {
+        const response = await axios.post(
+          `${BASE_URL}/trips-in-bounds/`,
+          bounds,
+          {
+            headers: {
+              Authorization: `JWT ${accessToken}`,
+            },
+          },
+        );
+        return response.data;
+      } catch (error) {
+        console.error(error);
+        throw new Error('Ошибка при получении выездов в границах карты');
+      }
+    },
 
-    //     const url =
-    //       fetchNext && Boolean(get().next)
-    //         ? `${get().next}`
-    //         : `${BASE_URL}/trips/?search=${get().searchPhrase}&ordering=${sortOptionToSearchParam(get().sort)}`;
+    fetchTripDates: async (tripId, accessToken) => {
+      try {
+        const response = await axios.get(`${BASE_URL}/trip-dates/${tripId}/`, {
+          headers: {
+            Authorization: `JWT ${accessToken}`,
+          },
+        });
+        const updatedDates = (response.data as TripDate[]).reduce(
+          (
+            result: Record<
+              string,
+              {
+                id: number;
+                selected: boolean;
+              }
+            >,
+            item,
+          ) => {
+            result[item.day] = { selected: true, id: item.id };
+            return result;
+          },
+          {},
+        );
+        return updatedDates;
+      } catch (error) {
+        console.error(error);
+        throw new Error('Ошибка получения дат выезда');
+      }
+    },
 
-    //     const response = await axios.get(url, {
-    //       headers: {
-    //         Authorization: `JWT ${accessToken}`,
-    //       },
-    //     });
-    //     const { count, next, previous, results } = await response.data;
-    //     set(state => {
-    //       state.count = count;
-    //       state.next = next;
-    //       state.previous = previous;
-    //       state.trips =
-    //         fetchNext && Boolean(get().next)
-    //           ? [...state.trips, ...results]
-    //           : results;
-    //     });
-    //   } catch (error) {
-    //     throw new Error('Ошибка при получении пользователей');
-    //   } finally {
-    //     set(state => {
-    //       state.isLoading = false;
-    //     });
-    //   }
-    // },
+    addTripDate: async (tripId, day, accessToken) => {
+      try {
+        const response = await axios.post(
+          `${BASE_URL}/trip-dates/${tripId}/`,
+          { day },
+          {
+            headers: {
+              Authorization: `JWT ${accessToken}`,
+            },
+          },
+        );
+        return response.data;
+      } catch (error) {
+        console.error(error);
+        throw new Error('Ошибка добавления даты выезда');
+      }
+    },
+
+    removeTripDate: async (tripDateId, accessToken) => {
+      try {
+        const response = await axios.delete(
+          `${BASE_URL}/trip-date/${tripDateId}/`,
+          {
+            headers: {
+              Authorization: `JWT ${accessToken}`,
+            },
+          },
+        );
+        return response.data;
+      } catch (error) {
+        console.error(error);
+        throw new Error('Ошибка удаления даты выезда');
+      }
+    },
 
     fetchTrips: async (accessToken, fetchNext) => {
       set(state => {
@@ -110,6 +156,7 @@ const useTripsStore = create<TripsStore>()(
           state.trips = canGetNext ? [...state.trips, ...results] : results;
         });
       } catch (error) {
+        console.error(error);
         throw new Error('Ошибка при получении пользователей');
       } finally {
         set(state => {
@@ -127,6 +174,7 @@ const useTripsStore = create<TripsStore>()(
         });
         return await response.data;
       } catch (error) {
+        console.error(error);
         throw new Error('Ошибка при получении выезда');
       }
     },
@@ -147,6 +195,7 @@ const useTripsStore = create<TripsStore>()(
           state.trips.push(newTrip);
         });
       } catch (error) {
+        console.error(error);
         throw new Error('Ошибка при добавлении пользователя');
       }
     },
@@ -172,6 +221,7 @@ const useTripsStore = create<TripsStore>()(
           };
         });
       } catch (error) {
+        console.error(error);
         throw new Error('Ошибка при обновлении пользователя');
       }
     },
@@ -190,6 +240,7 @@ const useTripsStore = create<TripsStore>()(
           trips: updatedTrips,
         }));
       } catch (error) {
+        console.error(error);
         throw new Error('Ошибка при удалении пользователей');
       }
     },
