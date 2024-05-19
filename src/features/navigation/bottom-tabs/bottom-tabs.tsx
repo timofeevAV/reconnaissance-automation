@@ -2,18 +2,19 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Trips, TripsMap, Profile } from '@/pages';
 import { TabBarIcon } from '@/features/ui';
-import { Home, Map, User } from '@tamagui/lucide-icons';
+import { Home, Map, User, Wrench } from '@tamagui/lucide-icons';
 import { BottomTabsParamsList } from './types/bottom-tabs-params-list';
+import TopTabs from '../top-tabs/top-tabs';
 
-const BottomTabs = createBottomTabNavigator<BottomTabsParamsList>();
+const BottomTabsNavigator = createBottomTabNavigator<BottomTabsParamsList>();
 
-const Tabs = () => {
+const BottomTabs = () => {
   return (
-    <BottomTabs.Navigator
+    <BottomTabsNavigator.Navigator
       screenOptions={{
         tabBarShowLabel: false,
       }}>
-      <BottomTabs.Screen
+      <BottomTabsNavigator.Screen
         name="trips"
         component={Trips}
         options={{
@@ -26,7 +27,7 @@ const Tabs = () => {
           ),
         }}
       />
-      <BottomTabs.Screen
+      <BottomTabsNavigator.Screen
         name="trips-map"
         component={TripsMap}
         options={{
@@ -40,7 +41,20 @@ const Tabs = () => {
           ),
         }}
       />
-      <BottomTabs.Screen
+      <BottomTabsNavigator.Screen
+        name="constuctor"
+        component={TopTabs}
+        options={{
+          headerShown: false,
+          tabBarIcon: props => (
+            <TabBarIcon
+              Icon={Wrench}
+              focused={props.focused}
+            />
+          ),
+        }}
+      />
+      <BottomTabsNavigator.Screen
         name="profile"
         component={Profile}
         options={{
@@ -53,8 +67,8 @@ const Tabs = () => {
           ),
         }}
       />
-    </BottomTabs.Navigator>
+    </BottomTabsNavigator.Navigator>
   );
 };
 
-export default Tabs;
+export default BottomTabs;

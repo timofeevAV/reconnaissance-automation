@@ -187,7 +187,10 @@ export const PointsList = ({
               dates={tripDates}
             />
           </View>
-          <YStack gap={'$3'}>
+          <YStack
+            gap={'$3'}
+            jc={'center'}
+            ai={'center'}>
             <H5
               textAlign="center"
               fontWeight={'bold'}>
@@ -195,8 +198,8 @@ export const PointsList = ({
             </H5>
             {tripScheme && (
               <View
-                maxWidth={isLandscape ? height : width}
-                maxHeight={isLandscape ? height : width}>
+                h={isLandscape ? height : width}
+                w={isLandscape ? height : width}>
                 <Image
                   style={{
                     width: '100%',
@@ -211,9 +214,9 @@ export const PointsList = ({
             <XStack gap={'$3'}>
               <Button
                 disabled={!Boolean(tripScheme)}
-                theme={'red'}
+                theme={Boolean(tripScheme) ? 'red_active' : 'red'}
                 onPress={removeScheme}>
-                Удалить
+                Очистить
               </Button>
               <Button
                 onPress={chooseScheme}

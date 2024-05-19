@@ -1,3 +1,5 @@
+export { Characteristics } from './characteristics/page';
+export { Samples } from './samples/page';
 export { NotFound } from './not-found/page';
 export { Profile } from './profile/page';
 export { TripsMap } from './trips-map/page';
