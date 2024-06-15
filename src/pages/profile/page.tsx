@@ -1,5 +1,6 @@
 import { InputWithLabel } from '@/features/ui';
 import { useAuthFacade } from '@/features/users';
+import { LogOut } from '@tamagui/lucide-icons';
 import { Button, View } from 'tamagui';
 
 const labels: Record<string, string> = {
@@ -36,7 +37,8 @@ export const Profile = () => {
       <Button
         theme="active"
         onPress={logout}
-        mt="$5">
+        mt="$5"
+        icon={LogOut}>
         Выйти
       </Button>
     </View>

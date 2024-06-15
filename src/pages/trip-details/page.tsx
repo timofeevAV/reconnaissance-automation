@@ -24,9 +24,10 @@ import * as Location from 'expo-location';
 import { Image } from 'expo-image';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { Point, PointPhoto, PointsPagination } from '@/features/points/types';
-import { Alert, Dimensions, Platform } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import axios from 'axios';
+import { User } from '@/features/users/types';
 
 const BASE_URL =
   Platform.select({
@@ -51,6 +52,26 @@ export const TripDetails = ({ navigation, route }: TripDetailsPageProps) => {
     null,
   );
   const listRef = useRef<FlashList<Point>>(null);
+  const [users, setUsers] = useImmer<User[]>([]);
+
+  const fetchEditors = useCallback(async () => {
+    try {
+      const response = await axios.get<{
+        results: User[];
+        count: number;
+        next: string | null;
+        previous: string | null;
+      }>(`${BASE_URL}/users/${tripId}/`, {
+        headers: {
+          Authorization: `JWT ${accessToken}`,
+        },
+      });
+      setUsers(response.data.results);
+    } catch (error) {
+      console.error(error);
+      throw new Error('Ошибка при получении пользователей');
+    }
+  }, [accessToken, setUsers, tripId]);
 
   useEffect(() => {
     (async () => {
@@ -73,6 +94,7 @@ export const TripDetails = ({ navigation, route }: TripDetailsPageProps) => {
         fetchTripPoints(tripId, accessToken).then(data => {
           setTripPoints(data);
         }),
+        fetchEditors(),
       ])
         .then(() => {
           setFetchError(false);
@@ -86,6 +108,7 @@ export const TripDetails = ({ navigation, route }: TripDetailsPageProps) => {
     fetchTrip,
     accessToken,
     fetchTripDates,
+    fetchEditors,
     setTrip,
     setTripDates,
     setTripPoints,
@@ -97,6 +120,66 @@ export const TripDetails = ({ navigation, route }: TripDetailsPageProps) => {
       setIsLoading(false);
     });
   }, [fetchAllData]);
+
+  const handleAddEditor = useCallback(
+    async (tripId: number, user: User) => {
+      try {
+        await axios.post(
+          `${BASE_URL}/trip-editor/${tripId}/add_editor/`,
+          {
+            editor_id: user.id,
+          },
+          {
+            headers: {
+              Authorization: `JWT ${accessToken}`,
+            },
+          },
+        );
+        setTrip(draft => {
+          if (draft) {
+            draft.editors.push(user);
+          }
+        });
+        setUsers(draft => draft.filter(e => e.id !== user.id));
+      } catch {
+        console.error('Ошибка при добавлении участника');
+        throw new Error('Ошибка при добавлении участника');
+      }
+    },
+    [accessToken, setTrip, setUsers],
+  );
+
+  const handleRemoveEditor = useCallback(
+    async (tripId: number, userId: number) => {
+      try {
+        await axios.post(
+          `${BASE_URL}/trip-editor/${tripId}/remove_editor/`,
+          {
+            editor_id: userId,
+          },
+          {
+            headers: {
+              Authorization: `JWT ${accessToken}`,
+            },
+          },
+        );
+        setUsers(draft => {
+          if (draft) {
+            draft.push(trip?.editors.find(e => e.id === userId) as User);
+          }
+        });
+        setTrip(draft => {
+          if (draft) {
+            draft.editors = draft.editors.filter(e => e.id !== userId);
+          }
+        });
+      } catch {
+        console.error('Ошибка при удалении участника');
+        throw new Error('Ошибка при удалении участника');
+      }
+    },
+    [accessToken, setTrip, setUsers, trip?.editors],
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -112,12 +195,23 @@ export const TripDetails = ({ navigation, route }: TripDetailsPageProps) => {
             <EditTripDataSheet
               trip={trip}
               setTrip={setTrip}
+              users={users}
               navigation={navigation}
+              addEditor={handleAddEditor}
+              removeEditor={handleRemoveEditor}
             />
           </XStack>
         ),
     });
-  }, [navigation, tripId, trip, setTrip]);
+  }, [
+    navigation,
+    tripId,
+    trip,
+    setTrip,
+    handleAddEditor,
+    handleRemoveEditor,
+    users,
+  ]);
 
   const handleRemoveScheme = async () => {
     await axios

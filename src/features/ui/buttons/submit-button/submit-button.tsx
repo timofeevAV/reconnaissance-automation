@@ -9,9 +9,9 @@ export const SubmitButton = ({
   return (
     <Button
       disabled={isSubmitting || props.disabled}
-      icon={isSubmitting ? <Spinner /> : undefined}
       theme={isSubmitting || props.disabled ? undefined : 'active'}
-      {...props}>
+      {...props}
+      icon={isSubmitting ? <Spinner /> : props.icon}>
       {children}
     </Button>
   );

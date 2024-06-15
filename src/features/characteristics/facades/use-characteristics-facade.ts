@@ -6,11 +6,13 @@ const useCharacteristicsFacade = () => {
     isLoading,
     fetchCharacteristics,
     addCharacteristic,
+    deleteCharacteristic,
   } = useCharacteristicsStore(state => ({
     characteristics: state.characteristics,
     isLoading: state.isLoading,
     fetchCharacteristics: state.fetchCharacteristics,
     addCharacteristic: state.addCharacteristic,
+    deleteCharacteristic: state.deleteCharacteristic,
   }));
 
   return {
@@ -18,6 +20,7 @@ const useCharacteristicsFacade = () => {
     isLoading,
     fetchCharacteristics,
     addCharacteristic,
+    deleteCharacteristic,
   };
 };
 

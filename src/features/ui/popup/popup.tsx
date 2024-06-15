@@ -88,7 +88,9 @@ const PopupContent: FC<PopupContentProps> = ({ children, menuPosition }) => {
       top={menuPosition?.top}
       right={menuPosition?.right}
       shadowRadius={3}
-      shadowOpacity={0.5}>
+      shadowOpacity={0.5}
+      backgroundColor={'$background'}
+      borderRadius={'$3'}>
       {children}
     </View>
   );

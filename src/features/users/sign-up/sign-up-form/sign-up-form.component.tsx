@@ -11,9 +11,15 @@ export const SignUpForm = () => {
       validationSchema={signUpValidationSchema}
       initialValues={initialValues}
       onSubmit={async userData =>
-        await signUp(userData).catch(e => {
-          alert(e);
-        })
+        await signUp(userData)
+          .catch(e => {
+            alert(e);
+          })
+          .then(() => {
+            alert(
+              'Для завершения регистрации перейдите по ссылке в письме, которое мы отправили вам на почту',
+            );
+          })
       }
       title="Зарегистрироваться"
       paddingHorizontal={'$3'}

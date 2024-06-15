@@ -46,6 +46,24 @@ const useSamplesStore = create<SamplesStore>()(
       }
     },
 
+    deleteSample: async (sampleId, accessToken) => {
+      axios
+        .delete(`${BASE_URL}/samples/${sampleId}/`, {
+          headers: {
+            Authorization: `JWT ${accessToken}`,
+          },
+        })
+        .then(() => {
+          set(state => {
+            state.samples = state.samples.filter(s => s.id !== sampleId);
+          });
+        })
+        .catch(error => {
+          console.error(error);
+          throw new Error('Ошибка при удалении образца');
+        });
+    },
+
     fetchSampleCharacteristics: async accessToken => {
       set(state => {
         state.isLoading = true;
@@ -95,24 +113,23 @@ const useSamplesStore = create<SamplesStore>()(
       }
     },
 
-    addSampleCharacteristic: async (
-      sampleId,
-      characteristicId,
-      accessToken,
-    ) => {
+    addSampleCharacteristic: async (sampleId, characteristic, accessToken) => {
       try {
-        const response = await axios.post<SampleCharacteristic>(
-          `${BASE_URL}/sample-characteristics/`,
-          { sample_id: sampleId, characteristic_id: characteristicId },
+        await axios.post<SampleCharacteristic>(
+          `${BASE_URL}/samplecharacteristics/`,
+          {
+            сharacteristic: characteristic.id,
+            sample: sampleId,
+          },
           {
             headers: {
               Authorization: `JWT ${accessToken}`,
             },
           },
         );
-        const newSampleCharacteristic = await response.data;
         set(state => {
-          state.sampleCharacteristics.push(newSampleCharacteristic);
+          const sampleIndex = state.samples.findIndex(s => s.id === sampleId);
+          state.samples[sampleIndex].characteristics.push(characteristic);
         });
       } catch (error) {
         console.error(error);
@@ -127,7 +144,7 @@ const useSamplesStore = create<SamplesStore>()(
     ) => {
       try {
         await axios.delete(
-          `${BASE_URL}/sample-characteristics/delete_by_composite_key/`,
+          `${BASE_URL}/samplecharacteristics/delete_by_composite_key/`,
           {
             headers: {
               Authorization: `JWT ${accessToken}`,
@@ -135,14 +152,12 @@ const useSamplesStore = create<SamplesStore>()(
             data: { sample_id: sampleId, characteristic_id: characteristicId },
           },
         );
+
         set(state => {
-          state.sampleCharacteristics = state.sampleCharacteristics.filter(
-            sc =>
-              !(
-                sc.sample_id === sampleId &&
-                sc.characteristic_id === characteristicId
-              ),
-          );
+          const sampleIndex = state.samples.findIndex(s => s.id === sampleId);
+          state.samples[sampleIndex].characteristics = state.samples[
+            sampleIndex
+          ].characteristics.filter(c => c.id !== characteristicId);
         });
       } catch (error) {
         console.error(error);

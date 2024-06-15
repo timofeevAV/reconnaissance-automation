@@ -15,6 +15,7 @@ const axiosInstance = axios.create({
 });
 
 interface User {
+  id: number | null;
   email: string | null;
   lastName: string | null;
   firstName: string | null;

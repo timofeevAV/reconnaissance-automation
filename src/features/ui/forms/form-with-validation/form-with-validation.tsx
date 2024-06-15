@@ -11,6 +11,7 @@ export const FormWithValidation = ({
   initialValues,
   onSubmit,
   title,
+  buttonProps,
   ...props
 }: FormWithValidationProps) => {
   return (
@@ -57,7 +58,8 @@ export const FormWithValidation = ({
                 isSubmitting ||
                 Object.values(values).some(v => !v) ||
                 Object.values(errors).some(Boolean)
-              }>
+              }
+              {...buttonProps}>
               {title}
             </SubmitButton>
           </Form.Trigger>

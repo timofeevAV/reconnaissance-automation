@@ -1,7 +1,8 @@
 import { useSamplesFacade } from '@/features/samples/facades';
 import { FlashList } from '@shopify/flash-list';
 import { SamplesListItem } from './samples-list-item/samples-list-item';
-import { getTokens } from 'tamagui';
+import { View, getTokens } from 'tamagui';
+import { SamplesListHeader } from './samples-list-header/samples-list-header';
 
 export const SamplesList = () => {
   const { samples } = useSamplesFacade();
@@ -13,8 +14,11 @@ export const SamplesList = () => {
       contentContainerStyle={{
         padding: tamaguiSpace,
       }}
+      ListHeaderComponent={SamplesListHeader}
+      ItemSeparatorComponent={() => <View height={tamaguiSpace} />}
       renderItem={({ item }) => <SamplesListItem item={item} />}
       keyExtractor={item => item.id.toString()}
+      estimatedItemSize={150}
     />
   );
 };

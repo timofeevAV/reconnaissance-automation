@@ -12,6 +12,10 @@ interface CharacteristicActions {
     expression: string | null,
     accessToken?: string | null,
   ) => Promise<void>;
+  deleteCharacteristic: (
+    id: number,
+    accessToken?: string | null,
+  ) => Promise<void>;
 }
 
 export type CharacteristicsStore = CharacteristicState & CharacteristicActions;

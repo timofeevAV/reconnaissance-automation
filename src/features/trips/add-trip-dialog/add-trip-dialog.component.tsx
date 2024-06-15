@@ -73,10 +73,10 @@ export const AddTripDialog = ({
                 onChangeText={setTripName}
               />
             </Fieldset>
-            <Fieldset>
+            {/* <Fieldset>
               <Label htmlFor="trip-members">Участники</Label>
               <Input id="trip-members" />
-            </Fieldset>
+            </Fieldset> */}
             <XStack
               alignSelf="flex-end"
               gap="$3">

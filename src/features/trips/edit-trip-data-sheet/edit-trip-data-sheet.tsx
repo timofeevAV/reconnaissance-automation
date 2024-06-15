@@ -14,22 +14,27 @@ import {
   Text,
   ListItem,
 } from 'tamagui';
-import { Edit3 } from '@tamagui/lucide-icons';
+import { Check, Edit3 } from '@tamagui/lucide-icons';
 import { EditTripDataSheetProps } from './types';
 import { useTripsFacade } from '../facades';
 import { useAuthFacade } from '@/features/users';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useImmer } from 'use-immer';
+import { Alert } from 'react-native';
+import { User } from '@/features/users/types';
 
 export const EditTripDataSheet = ({
   trip,
   setTrip,
   navigation,
+  users,
+  addEditor,
+  removeEditor,
 }: EditTripDataSheetProps) => {
   const [tripFormData, updateTripFormData] = useImmer({
     name: trip.name,
   });
-  const { accessToken } = useAuthFacade();
+  const { accessToken, user } = useAuthFacade();
   const { updateTrip } = useTripsFacade();
   const [open, setOpen] = useState(false);
   const insets = useSafeAreaInsets();
@@ -61,6 +66,10 @@ export const EditTripDataSheet = ({
     () => !tripFormData.name || tripFormData.name === trip.name,
     [tripFormData.name, trip.name],
   );
+
+  const getFullName = useCallback((user: User) => {
+    return `${user?.lastName} ${user?.firstName} ${user?.middleName}`;
+  }, []);
 
   return (
     <>
@@ -105,9 +114,62 @@ export const EditTripDataSheet = ({
               keyboardShouldPersistTaps="always"
               borderWidth={'$1'}
               borderColor={'$borderColor'}
-              gap={'$3'}>
+              gap={'$3'}
+              disabled={user?.id !== trip.owner?.id}>
               {trip.editors.map(editor => {
-                return <ListItem key={editor.id}>{editor.firstName}</ListItem>;
+                return (
+                  <ListItem
+                    key={editor.id}
+                    icon={<Check />}
+                    title={getFullName(editor)}
+                    subTitle={editor.role}
+                    onPress={() => {
+                      Alert.alert(
+                        'Удалить участника',
+                        `Вы действительно хотите удалить ${editor.firstName}?`,
+                        [
+                          {
+                            text: 'Отмена',
+                            style: 'cancel',
+                          },
+                          {
+                            text: 'Удалить',
+                            onPress: () => {
+                              removeEditor(trip.id, editor.id);
+                            },
+                          },
+                        ],
+                      );
+                    }}
+                  />
+                );
+              })}
+              {users.map(user => {
+                return (
+                  <ListItem
+                    key={user.id}
+                    title={getFullName(user)}
+                    subTitle={user.role}
+                    onPress={() => {
+                      Alert.alert(
+                        'Добавить участника',
+                        `Вы действительно хотите добавить ${user.firstName}?`,
+                        [
+                          {
+                            text: 'Отмена',
+                            style: 'cancel',
+                          },
+                          {
+                            text: 'Добавить',
+                            onPress: () => {
+                              addEditor(trip.id, user);
+                            },
+                          },
+                        ],
+                      );
+                    }}
+                  />
+                );
               })}
             </ScrollView>
           </YStack>

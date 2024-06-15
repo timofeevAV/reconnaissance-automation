@@ -1,7 +1,8 @@
 import { FlashList } from '@shopify/flash-list';
 import { CharacteristicsListItem } from './characteristics-list-item/characteristics-list-item';
 import { useCharacteristicsFacade } from '../facades';
-import { getTokens } from 'tamagui';
+import { View, getTokens } from 'tamagui';
+import { CharacteristicsListHeader } from './characteristics-list-header/characteristics-list-header';
 
 export const CharacteristicsList = () => {
   const { characteristics } = useCharacteristicsFacade();
@@ -13,8 +14,11 @@ export const CharacteristicsList = () => {
       contentContainerStyle={{
         padding: tamaguiSpace,
       }}
+      ListHeaderComponent={<CharacteristicsListHeader />}
+      ItemSeparatorComponent={() => <View height={tamaguiSpace} />}
       renderItem={({ item }) => <CharacteristicsListItem item={item} />}
       keyExtractor={item => item.id.toString()}
+      estimatedItemSize={72}
     />
   );
 };

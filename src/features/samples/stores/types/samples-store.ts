@@ -1,3 +1,4 @@
+import { Characteristic } from '@/features/characteristics/types';
 import { Sample, SampleCharacteristic } from '../../types';
 
 export interface SampleState {
@@ -8,11 +9,15 @@ export interface SampleState {
 
 interface SampleActions {
   fetchSamples: (accessToken?: string | null) => Promise<void>;
+  deleteSample: (
+    sampleId: number,
+    accessToken?: string | null,
+  ) => Promise<void>;
   fetchSampleCharacteristics: (accessToken?: string | null) => Promise<void>;
   addSample: (name: string, accessToken?: string | null) => Promise<void>;
   addSampleCharacteristic: (
     sampleId: number,
-    characteristicId: number,
+    characteristic: Characteristic,
     accessToken?: string | null,
   ) => Promise<void>;
   deleteSampleCharacteristic: (

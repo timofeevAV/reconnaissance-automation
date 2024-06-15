@@ -68,6 +68,24 @@ const useCharacteristicsStore = create<CharacteristicsStore>()(
         throw new Error('Ошибка при добавлении характеристики');
       }
     },
+
+    deleteCharacteristic: async (id, accessToken) => {
+      try {
+        await axios.delete(`${BASE_URL}/characteristics/${id}/`, {
+          headers: {
+            Authorization: `JWT ${accessToken}`,
+          },
+        });
+        set(state => {
+          state.characteristics = state.characteristics.filter(
+            c => c.id !== id,
+          );
+        });
+      } catch (error) {
+        console.error(error);
+        throw new Error('Ошибка при удалении характеристики');
+      }
+    },
   })),
 );
 

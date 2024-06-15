@@ -18,7 +18,14 @@ import { useAuthFacade } from '@/features/users';
 import { useRef, useState } from 'react';
 import { PointsListItem } from '../points-list-item/points-list-item';
 import { Dimensions, LayoutAnimation } from 'react-native';
-import { Minimize } from '@tamagui/lucide-icons';
+import {
+  Camera,
+  Delete,
+  Eye,
+  EyeOff,
+  Minimize,
+  Upload,
+} from '@tamagui/lucide-icons';
 import MapView, { Marker, MarkerDragStartEndEvent } from 'react-native-maps';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
@@ -38,6 +45,8 @@ export const PointsList = ({
 }: PointsListProps) => {
   const [isPointsLoading, setIsPointsLoading] = useState<boolean>(false);
   const [showMap, setShowMap] = useState<boolean>(true);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const [kmlReady, setKmlReady] = useState(false);
   const insets = useSafeAreaInsets();
   const tamaguiSpace = getTokens().space.$3.val;
   const theme = useTheme();
@@ -211,22 +220,29 @@ export const PointsList = ({
                 />
               </View>
             )}
-            <XStack gap={'$3'}>
+            <XStack
+              flexWrap="wrap"
+              width={'100%'}
+              gap={'$1.5'}>
               <Button
+                icon={Delete}
                 disabled={!Boolean(tripScheme)}
                 theme={Boolean(tripScheme) ? 'red_active' : 'red'}
                 onPress={removeScheme}>
                 Очистить
               </Button>
               <Button
+                icon={Upload}
                 onPress={chooseScheme}
                 theme={'active'}>
                 Загрузить
               </Button>
               {showMap && (
                 <Button
+                  icon={Camera}
                   onPress={takeSnapshot}
-                  theme={'active'}>
+                  theme={'active'}
+                  disabled={kmlReady && mapLoaded}>
                   Снимок карты
                 </Button>
               )}
@@ -238,6 +254,8 @@ export const PointsList = ({
               exiting={FadeOut}
               entering={FadeIn}>
               <MapView
+                onMapReady={() => setMapLoaded(true)}
+                onKmlReady={() => setKmlReady(true)}
                 ref={mapRef}
                 style={{
                   width: isLandscape ? height : width,
@@ -286,6 +304,7 @@ export const PointsList = ({
           )}
           <Button
             onPress={() => setShowMap(!showMap)}
+            icon={showMap ? EyeOff : Eye}
             theme={'active'}>
             {showMap ? 'Скрыть карту' : 'Показать карту'}
           </Button>

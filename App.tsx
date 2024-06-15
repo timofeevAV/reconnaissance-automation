@@ -20,6 +20,9 @@ import { useAuthFacade } from '@/features/users';
 import { AuthenticationStack, MainStack } from '@/features/navigation';
 import * as Linking from 'expo-linking';
 import { NotFound } from '@/pages';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']);
+LogBox.ignoreAllLogs();
 
 const prefix = Linking.createURL('/');
 

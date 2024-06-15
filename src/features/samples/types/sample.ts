@@ -1,6 +1,9 @@
+import { Characteristic } from '@/features/characteristics/types';
+
 export interface Sample {
   id: number;
   name: string;
+  characteristics: Characteristic[];
 }
 
 export interface SampleCharacteristic {

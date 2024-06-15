@@ -1,5 +1,5 @@
 import { SignInPageProps } from './sign-in-page-props';
-import { Text, XStack, YStack } from 'tamagui';
+import { H3, H5, Text, XStack, YStack } from 'tamagui';
 import { SignInForm } from '@/features/users';
 import { DismissKeyboardView } from '@/features/ui';
 
@@ -15,8 +15,6 @@ export const SignIn = (props: SignInPageProps) => {
         <SignInForm />
         <XStack
           alignSelf="center"
-          // position="absolute"
-          // bottom={insets.bottom ? insets.bottom : '$3'}
           flexWrap="wrap"
           gap="$1.5">
           <Text textAlign="center">Ещё не зарегистрированы?</Text>
